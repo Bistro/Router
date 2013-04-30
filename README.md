@@ -2,6 +2,19 @@
 
 A stand-alone routing engine for PHP > = 5.3.
 
+## Installation
+
+Packagist all the way!
+
+``` json
+"require": {
+	"bistro/router": "1.0.*"
+}
+```
+
+Of course you can always [download a zip](https://github.com/Bistro/Router/archive/master.zip)
+of the source on GitHub.
+
 ## Creating Routes
 
 ``` php
@@ -63,6 +76,18 @@ Want to pick up everything at the end of a url? Easy!
 
 ``` php
 $router->add('wildcard', '/:controller/.*:wildcard')
+```
+
+## Adding Request Method Defaults
+
+Building an api and want to add in different parameters for each request method?
+
+``` php
+$router->add('api', "/:controller/\d+:id?")
+	->get(array('action' => 'read'))
+	->post(array('action' => 'create'))
+	->put(array('action' => 'update'))
+	->delete(array('action' => 'delete'));
 ```
 
 ## Reverse Routing
