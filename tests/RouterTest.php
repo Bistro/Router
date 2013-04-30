@@ -138,6 +138,14 @@ class RouterTest extends PHPUnit_Framework_TestCase
 		)));
 	}
 
+	public function testReverseRoutingWithoutOptionalParams()
+	{
+		$this->router->add('oops', '/:controller/:action?')
+			->defaults(array('action' => 'view'));
+
+		$this->assertSame('/dashboard', $this->router->url('oops', array('controller' => 'dashboard')));
+	}
+
 	public function testMethodSpecificRoutes()
 	{
 		$this->router->add('methods', '/user/:id?')

@@ -149,7 +149,6 @@ class Route
 			return $this->pattern;
 		}
 
-		$params = \array_merge($this->defaults, $params);
 		$url = $this->pattern;
 
 		foreach ($this->getSegments($url) as $segment)
