@@ -29,7 +29,7 @@ to the request. Probably 404 time!
 You can supply named segements for your routes with :{name}.
 
 ``` php
-$router->add('crud', /:controller/:action/:id?)->defaults(array(
+$router->add('crud', '/:controller/:action/:id?')->defaults(array(
 	'id' => null
 ));
 ```
@@ -39,20 +39,20 @@ You can put a ? at the end of a named segment to make this segment optional.
 ## Adding Constraints
 
 If you want to add constraints to a named segment you can put a valid regular expression
-before the :.
+before the `:`
 
 ``` php
 $router->add('id_only', '/:controller/user|post:action/\d+:id');
 ```
 
-In this route the action must be either user or post and the id must only be numbers.
+In this route the action must be either user or post and the id is an integer.
 
 ## Method Based Routes
 
 Only want to pick up certain request methods? Just use the helper methods
 
 ``` php
-$router->post('login', '/login')->defaults(array('controller' => 'login', action' => 'process'));
+$router->post('login', '/login')->defaults(array('controller' => 'login', 'action' => 'process'));
 ```
 
 The available helper methods are `get`, `post`, `put` and `delete`.
