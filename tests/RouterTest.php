@@ -2,6 +2,9 @@
 
 use \Bistro\Router\Router;
 
+/**
+ * Most of these tests are for routes and not the router... oh well
+ */
 class RouterTest extends PHPUnit_Framework_TestCase
 {
 	public $router;
@@ -133,6 +136,21 @@ class RouterTest extends PHPUnit_Framework_TestCase
 			'controller' => 'user',
 			'action' => 'create'
 		)));
+	}
+
+	public function testMethodSpecificRoutes()
+	{
+		$this->router->add('methods', '/user/:id?')
+			->defaults(array('controller' => 'user'))
+			->get(array('action' => 'read'))
+			->post(array('action' => 'create'))
+			->put(array('action' => 'update'))
+			->delete(array('action' => 'delete'));
+
+		$this->assertSame(
+			array('controller' => 'user', 'action' => 'update', 'id' => '5'),
+			$this->router->match("PUT", '/user/5')
+		);
 	}
 
 	/**

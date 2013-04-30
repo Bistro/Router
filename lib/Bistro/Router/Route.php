@@ -13,6 +13,13 @@ class Route
 	protected $defaults = array();
 	protected $matched_params = array();
 
+	protected $method_defaults = array(
+		"GET" => array(),
+		"POST" => array(),
+		"PUT" => array(),
+		"DELETE" => array()
+	);
+
 	/**
 	 * @param string $pattern     The url pattern
 	 * @param array  $responds_to An array holding the request verbs that this route responds to
@@ -66,12 +73,92 @@ class Route
 
 			if ( ! empty($matches))
 			{
-				$this->matched_params = $this->cleanMatches($matches);
+				$this->matched_params = \array_merge(
+					$this->defaults,
+					$this->method_defaults[$method],
+					$this->cleanMatches($matches)
+				);
+
 				$match = true;
 			}
 		}
 
 		return $match;
+	}
+
+	/**
+	 * Adds extra params for a GET request.
+	 *
+	 * @param  array $params Additional route params
+	 * @return $this
+	 */
+	public function get($params)
+	{
+		$this->method_defaults["GET"] = $params;
+		return $this;
+	}
+
+	/**
+	 * Adds extra params for a POST request.
+	 *
+	 * @param  array $params Additional route params
+	 * @return $this
+	 */
+	public function post($params)
+	{
+		$this->method_defaults["POST"] = $params;
+		return $this;
+	}
+
+	/**
+	 * Adds extra params for a PUT request.
+	 *
+	 * @param  array $params Additional route params
+	 * @return $this
+	 */
+	public function put($params)
+	{
+		$this->method_defaults["PUT"] = $params;
+		return $this;
+	}
+
+	/**
+	 * Adds extra params for a DELETE request.
+	 *
+	 * @param  array $params Additional route params
+	 * @return $this
+	 */
+	public function delete($params)
+	{
+		$this->method_defaults["DELETE"] = $params;
+		return $this;
+	}
+
+	/**
+	 * A reverse routing helper.
+	 *
+	 * @throws \UnexpectedValueException
+	 *
+	 * @param  array  $params Parameters to set named options to
+	 * @return string
+	 */
+	public function url($params = array())
+	{
+		if ($this->isStatic())
+		{
+			return $this->pattern;
+		}
+
+		$params = \array_merge($this->defaults, $params);
+		$url = $this->pattern;
+
+		foreach ($this->getSegments($url) as $segment)
+		{
+			$func = $segment['optional'] === true ? 'replaceOptional' : 'replaceRequired';
+			$url = $this->{$func}($url, $segment['name'], $segment['token'], $params);
+		}
+
+		return $url;
 	}
 
 	/**
@@ -100,33 +187,6 @@ class Route
 
 		$this->compiled = "~^{$compiled}$~";
 		return $this->compiled;
-	}
-
-	/**
-	 * A reverse routing helper.
-	 *
-	 * @throws \UnexpectedValueException
-	 *
-	 * @param  array  $params Parameters to set named options to
-	 * @return string
-	 */
-	public function url($params = array())
-	{
-		if ($this->isStatic())
-		{
-			return $this->pattern;
-		}
-
-		$params = \array_merge($this->defaults, $params);
-		$url = $this->pattern;
-
-		foreach ($this->getSegments($url) as $segment)
-		{
-			$func = $segment['optional'] === true ? 'replaceOptional' : 'replaceRequired';
-			$url = $this->{$func}($url, $segment['name'], $segment['token'], $params);
-		}
-
-		return $url;
 	}
 
 	/**
@@ -201,7 +261,7 @@ class Route
 			}
 		}
 
-		return \array_merge($this->defaults, $named);
+		return $named;
 	}
 
 	/**
