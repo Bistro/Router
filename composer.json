@@ -1,0 +1,23 @@
+{
+	"name": "bistro/router",
+	"description": "A route engine for PHP >= 5.3",
+	"type": "library",
+	"keywords": ["router", "route", "routes", "routing"],
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Dave Widmer",
+			"email": "dave@davewidmer.net",
+			"homepage": "http://www.davewidmer.net",
+			"role": "Developer"
+		}
+	],
+	"require": {
+		"php": ">=5.3"
+	},
+	"autoload": {
+		"psr-0": {
+			"Bistro\\Router": "lib/"
+		}
+	}
+}
